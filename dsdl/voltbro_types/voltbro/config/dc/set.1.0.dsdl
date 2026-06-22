@@ -1,0 +1,5 @@
+voltbro.config.dc.pid_config.1.0 new_config
+@sealed
+---
+uavcan.primitive.scalar.Bit.1.0 ok
+@sealed

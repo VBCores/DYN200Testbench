@@ -1,0 +1,77 @@
+# Local agent/tooling state
+.agents/
+.codex/
+
+# Git internals accidentally copied into the project tree
+.git/
+
+# CMake build trees and generated build files
+build*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+DartConfiguration.tcl
+compile_commands.json
+install_manifest.txt
+Makefile
+rules.ninja
+build.ninja
+.ninja_deps
+.ninja_log
+Testing/
+CMakeUserPresets.json
+
+# Install/package output
+install/
+_install/
+package/
+_CPack_Packages/
+*.cmake.user
+
+# Compiled artifacts
+*.a
+*.so
+*.so.*
+*.dylib
+*.dll
+*.exe
+*.out
+*.o
+*.obj
+*.lo
+*.la
+*.lai
+*.elf
+*.bin
+*.hex
+*.map
+
+# Runtime output from examples/tools
+*.log
+*.pid
+*.tmp
+*.bak
+motor.csv
+dyn200_brake.csv
+testbench_*.csv
+
+# Python/virtualenv artifacts used by Nunavut tooling
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# Editor/OS files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

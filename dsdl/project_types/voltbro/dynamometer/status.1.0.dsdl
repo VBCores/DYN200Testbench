@@ -1,0 +1,17 @@
+uint32 sample_counter
+uint32 crc_error_count
+uint32 timeout_count
+uint32 frame_sync_count
+uint32 uart_error_count
+uint32 cyphal_tx_error_count
+uint32 cyphal_rx_error_count
+uint32 same_sample_republished_count
+
+uavcan.primitive.scalar.Real32.1.0 actual_acquisition_rate
+uavcan.primitive.scalar.Real32.1.0 cyphal_publication_rate
+
+uint8 dyn200_address
+uint32 dyn200_baudrate
+uint8 last_status
+
+@sealed

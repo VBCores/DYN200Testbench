@@ -1,0 +1,10 @@
+uavcan.primitive.scalar.Real32.1.0 front
+uavcan.primitive.scalar.Real32.1.0 back
+uavcan.primitive.scalar.Real32.1.0 side_top
+uavcan.primitive.scalar.Real32.1.0 side_bottom
+uavcan.primitive.scalar.Real32.1.0 top
+uavcan.primitive.scalar.Real32.1.0 bottom
+
+uavcan.primitive.scalar.Real32.1.0 impeller
+
+@extent 32 * 7

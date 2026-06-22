@@ -1,0 +1,14 @@
+uint32 sample_counter
+uint64 timestamp_us
+
+uavcan.si.unit.angular_velocity.Scalar.1.0 angular_velocity
+uavcan.si.unit.torque.Scalar.1.0 torque
+uavcan.si.unit.power.Scalar.1.0 power
+
+int32 raw_speed
+int32 raw_torque
+int32 raw_power
+
+uint8 status_flags
+
+@sealed

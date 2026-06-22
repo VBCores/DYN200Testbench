@@ -1,0 +1,19 @@
+# Enumeration values taken from libvoltbro
+# enum class SetPointType: uint8_t  {
+#    VELOCITY = 0,
+#    TORQUE = 1,
+#    POSITION = 2,
+#    VOLTAGE = 3,
+#    UNIVERSAL = 4
+#};
+
+uint8 VELOCITY = 0
+uint8 TORQUE = 1
+uint8 POSITION = 2
+uint8 VOLTAGE = 3
+uint8 UNIVERSAL = 4
+
+uint8 set_point_type  # SetPointType
+float32 set_point_value
+
+@sealed

@@ -1,0 +1,14 @@
+uint8 START_ACQUISITION = 1
+uint8 STOP_ACQUISITION = 2
+uint8 SET_ACQUISITION_RATE = 3
+uint8 SET_PUBLICATION_RATE = 4
+uint8 ZERO_REQUEST = 5
+uint8 READ_STATUS = 6
+uint8 SET_MODBUS_ADDRESS_RAM_ONLY = 7
+uint8 SET_BAUD_RAM_ONLY = 8
+
+uint8 command
+uint32 argument_u32
+uavcan.primitive.scalar.Real32.1.0 argument_real32
+
+@sealed

@@ -1,0 +1,13 @@
+uavcan.time.SynchronizedTimestamp.1.0 timestamp
+
+uavcan.si.unit.angle.Scalar.1.0 angle
+uavcan.si.unit.angular_velocity.Scalar.1.0 velocity
+uavcan.si.unit.torque.Scalar.1.0 torque
+
+uavcan.si.unit.electric_current.Scalar.1.0 current
+uavcan.si.unit.voltage.Scalar.1.0 bus_voltage
+uavcan.si.unit.temperature.Scalar.1.0 mcu_temp
+uavcan.si.unit.temperature.Scalar.1.0 stator_temp
+uavcan.primitive.scalar.Bit.1.0 has_fault
+
+@sealed

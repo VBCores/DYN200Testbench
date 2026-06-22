@@ -1,0 +1,10 @@
+uavcan.si.unit.torque.Scalar.1.0 torque
+uavcan.si.unit.angle.Scalar.1.0 angle
+uavcan.si.unit.angular_velocity.Scalar.1.0 velocity
+uavcan.primitive.scalar.Real32.1.0 angle_kp
+uavcan.primitive.scalar.Real32.1.0 velocity_kp
+
+uavcan.primitive.scalar.Real32.1.0 I_kp
+uavcan.primitive.scalar.Real32.1.0 I_ki
+
+@sealed

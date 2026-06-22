@@ -1,0 +1,3 @@
+uavcan.primitive.scalar.Bit.1.0 emergency_button
+uavcan.primitive.scalar.Bit.1.0 user_button
+@sealed
