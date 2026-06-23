@@ -21,8 +21,7 @@ void usage() {
         << "  --position-step VALUE Position stage offset from observed start position, rad. Default: 0.2\n"
         << "  --leave-enabled       Do not send state.is_on=false at the end.\n"
         << "  -h, --help            Show this help.\n\n"
-        << "The tool sends setpoints at 50 Hz, stops between stages, and prints a final bus summary.\n\n";
-    printSummaryFormat();
+        << "The tool sends setpoints at 50 Hz, stops between stages, and prints one final result line.\n\n";
 }
 
 void runFor(CyphalInterfacePtr& bus,
@@ -53,6 +52,9 @@ int main(int argc, char** argv) {
             usage();
             return 0;
         }
+        if (!positional(argc, argv).empty()) {
+            return invalidSyntax("testbench_motor_sequence");
+        }
         const auto iface = optionValue(argc, argv, "--iface", "vcan1.0");
         const auto node_id = static_cast<uint8_t>(optionInt(argc, argv, "--node-id", 11));
         const int stage_ms = optionInt(argc, argv, "--stage-ms", 1500);
@@ -72,7 +74,6 @@ int main(int argc, char** argv) {
             std::cerr << "state.is_on was not confirmed by node " << unsigned(node_id) << "\n";
             return 1;
         }
-        std::cout << "state.is_on confirmed true\n";
 
         const auto warmup_deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(500);
         while (std::chrono::steady_clock::now() < warmup_deadline) {
@@ -80,26 +81,25 @@ int main(int argc, char** argv) {
         }
         const float start_pos = snapshot.last_motor ? snapshot.last_motor->position_rad.value_or(0.0F) : 0.0F;
 
-        std::cout << "stage velocity value=" << velocity << "\n";
         runFor(bus, motor, node_id, "velocity", velocity, std::chrono::milliseconds(stage_ms));
         motor.stopMotor(node_id);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        std::cout << "stage torque value=" << torque << "\n";
         runFor(bus, motor, node_id, "torque", torque, std::chrono::milliseconds(stage_ms));
         motor.setTorque(node_id, 0.0F);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        std::cout << "stage position target=" << (start_pos + position_step) << "\n";
         runFor(bus, motor, node_id, "position", start_pos + position_step, std::chrono::milliseconds(stage_ms));
         motor.stopMotor(node_id);
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         if (!leave_enabled) {
             motor.disableMotor(node_id);
-            std::cout << "state.is_on disable sent\n";
         }
-        printSummary(snapshot, std::chrono::milliseconds(stage_ms * 3 + 500));
+        std::cout << "OK: motor sequence complete"
+                  << " motor_rx=" << snapshot.vbdrive_state
+                  << " dyn_state_rx=" << snapshot.dyn_state
+                  << " dyn_status_rx=" << snapshot.dyn_status << "\n";
         return 0;
     } catch (const std::exception& e) {
         std::cerr << "ERROR: " << e.what() << "\n";

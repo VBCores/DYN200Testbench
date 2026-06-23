@@ -75,9 +75,12 @@ struct VbdriveFocCommand {
 struct VbdriveRegisterAccessResult {
     uint8_t source_node_id{};
     uint8_t transfer_id{};
+    std::string name;
     bool mutable_register{};
     bool persistent_register{};
     std::optional<bool> bit_value;
+    std::optional<int64_t> integer_value;
+    std::optional<uint64_t> natural_value;
 };
 
 class VbdriveClient {
@@ -161,15 +164,13 @@ public:
         validateNodeId(target_node_id);
         uavcan_register_Access_Request_1_0 request{};
         uavcan_register_Access_Request_1_0_initialize_(&request);
-        constexpr char kRegisterName[] = "state.is_on";
-        request.name.name.count = sizeof(kRegisterName) - 1U;
-        for (size_t i = 0; i < request.name.name.count; ++i) {
-            request.name.name.elements[i] = static_cast<uint8_t>(kRegisterName[i]);
-        }
+        setRegisterName(request, "state.is_on");
         uavcan_register_Value_1_0_select_bit_(&request.value);
         request.value.bit.value.count = 1;
         request.value.bit.value.bitpacked[0] = enabled ? 1U : 0U;
 
+        pending_register_name_ = "state.is_on";
+        last_register_access_.reset();
         interface_->send_request(&request,
                                  kRegisterAccessServiceId,
                                  &register_access_tid_,
@@ -187,6 +188,40 @@ public:
         while (std::chrono::steady_clock::now() < deadline) {
             interface_->loop();
             if (last_register_access_ && last_register_access_->source_node_id == target_node_id) {
+                return last_register_access_;
+            }
+        }
+        return std::nullopt;
+    }
+
+    void readRegister(uint8_t target_node_id, const std::string& name) {
+        validateNodeId(target_node_id);
+        uavcan_register_Access_Request_1_0 request{};
+        uavcan_register_Access_Request_1_0_initialize_(&request);
+        setRegisterName(request, name);
+        uavcan_register_Value_1_0_select_empty_(&request.value);
+
+        pending_register_name_ = name;
+        last_register_access_.reset();
+        interface_->send_request(&request,
+                                 kRegisterAccessServiceId,
+                                 &register_access_tid_,
+                                 target_node_id);
+        flushCyphalTx(interface_);
+        stats_.command_messages_sent++;
+    }
+
+    std::optional<VbdriveRegisterAccessResult> readRegisterAndWait(
+        uint8_t target_node_id,
+        const std::string& name,
+        std::chrono::milliseconds timeout = std::chrono::milliseconds(500)) {
+        readRegister(target_node_id, name);
+        const auto deadline = std::chrono::steady_clock::now() + timeout;
+        while (std::chrono::steady_clock::now() < deadline) {
+            interface_->loop();
+            if (last_register_access_ &&
+                last_register_access_->source_node_id == target_node_id &&
+                last_register_access_->name == name) {
                 return last_register_access_;
             }
         }
@@ -236,6 +271,16 @@ private:
         }
     }
 
+    static void setRegisterName(uavcan_register_Access_Request_1_0& request, const std::string& name) {
+        if (name.size() > uavcan_register_Name_1_0_name_ARRAY_CAPACITY_) {
+            throw ProtocolError("register name is too long");
+        }
+        request.name.name.count = name.size();
+        for (size_t i = 0; i < request.name.name.count; ++i) {
+            request.name.name.elements[i] = static_cast<uint8_t>(name[i]);
+        }
+    }
+
     void acceptState(const voltbro_foc_state_simple_1_0& msg, CanardRxTransfer* transfer) {
         last_state_ = convertVbdriveStateSimple(msg, transfer);
         stats_.state_messages++;
@@ -249,10 +294,29 @@ private:
             out.source_node_id = static_cast<uint8_t>(transfer->metadata.remote_node_id);
             out.transfer_id = transfer->metadata.transfer_id;
         }
+        out.name = pending_register_name_;
         out.mutable_register = msg._mutable;
         out.persistent_register = msg.persistent;
         if (uavcan_register_Value_1_0_is_bit_(&msg.value) && msg.value.bit.value.count > 0) {
             out.bit_value = (msg.value.bit.value.bitpacked[0] & 0x01U) != 0;
+        }
+        if (uavcan_register_Value_1_0_is_integer64_(&msg.value) && msg.value.integer64.value.count > 0) {
+            out.integer_value = msg.value.integer64.value.elements[0];
+        } else if (uavcan_register_Value_1_0_is_integer32_(&msg.value) && msg.value.integer32.value.count > 0) {
+            out.integer_value = msg.value.integer32.value.elements[0];
+        } else if (uavcan_register_Value_1_0_is_integer16_(&msg.value) && msg.value.integer16.value.count > 0) {
+            out.integer_value = msg.value.integer16.value.elements[0];
+        } else if (uavcan_register_Value_1_0_is_integer8_(&msg.value) && msg.value.integer8.value.count > 0) {
+            out.integer_value = msg.value.integer8.value.elements[0];
+        }
+        if (uavcan_register_Value_1_0_is_natural64_(&msg.value) && msg.value.natural64.value.count > 0) {
+            out.natural_value = msg.value.natural64.value.elements[0];
+        } else if (uavcan_register_Value_1_0_is_natural32_(&msg.value) && msg.value.natural32.value.count > 0) {
+            out.natural_value = msg.value.natural32.value.elements[0];
+        } else if (uavcan_register_Value_1_0_is_natural16_(&msg.value) && msg.value.natural16.value.count > 0) {
+            out.natural_value = msg.value.natural16.value.elements[0];
+        } else if (uavcan_register_Value_1_0_is_natural8_(&msg.value) && msg.value.natural8.value.count > 0) {
+            out.natural_value = msg.value.natural8.value.elements[0];
         }
         last_register_access_ = out;
     }
@@ -265,6 +329,7 @@ private:
     std::unique_ptr<RegisterAccessResponseSubscription> register_response_sub_;
     std::optional<VbdriveState> last_state_;
     std::optional<VbdriveRegisterAccessResult> last_register_access_;
+    std::string pending_register_name_;
     std::function<void(const VbdriveState&)> state_cb_;
     VbdriveStatistics stats_{};
 };

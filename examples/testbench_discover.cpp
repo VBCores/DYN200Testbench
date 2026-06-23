@@ -27,6 +27,9 @@ int main(int argc, char** argv) {
             usage();
             return 0;
         }
+        if (!positional(argc, argv).empty()) {
+            return invalidSyntax("testbench_discover");
+        }
         installSignalHandlers();
         const auto iface = optionValue(argc, argv, "--iface", "vcan1.0");
         const int duration_ms = optionInt(argc, argv, "--duration-ms", 3000);
@@ -45,7 +48,6 @@ int main(int argc, char** argv) {
         }
 
         std::cout << "Interface: " << iface << "\n";
-        printKnownPorts();
         printSummary(snapshot, std::chrono::steady_clock::now() - start);
 
         const bool motor_ok = snapshot.vbdrive_state > 0;

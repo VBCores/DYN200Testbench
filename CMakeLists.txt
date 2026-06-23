@@ -75,7 +75,10 @@ if(VTC_BUILD_EXAMPLES)
         testbench_discover
         testbench_monitor
         testbench_command
-        testbench_motor_sequence)
+        testbench_motor_sequence
+        testbench_simple_csv
+        testbench_direction_arrays
+        testbench_torque_sweep)
         add_executable(${example} examples/${example}.cpp)
         target_link_libraries(${example} PRIVATE voltbro_testbench_client)
     endforeach()

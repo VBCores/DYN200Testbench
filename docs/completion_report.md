@@ -37,7 +37,7 @@ Runtime architecture:
 - Message commands use `send_msg()`.
 - VBDRIVE `state.is_on` uses `send_request()` with `uavcan.register.Access.1.0` and a typed response subscription.
 - `TestbenchClient` shares one `CyphalInterface` when motor and DYN interface names are equal.
-- Supported CLI examples are `testbench_discover`, `testbench_monitor`, `testbench_command`, and `testbench_motor_sequence`.
+- Supported examples are `testbench_discover`, `testbench_monitor`, `testbench_command`, `testbench_motor_sequence`, `testbench_simple_csv`, `testbench_direction_arrays`, and `testbench_torque_sweep`.
 - Project-local Cyphal/CAN transport, CAN-ID construction/parsing, tail-byte handling, transfer-ID management, CAN-FD DLC padding, and command serializers are not active architecture; normal RX/TX is delegated to `VBCores/libcxxcanard`.
 
 VBDRIVE subject IDs:

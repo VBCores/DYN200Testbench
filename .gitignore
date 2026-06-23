@@ -49,13 +49,12 @@ _CPack_Packages/
 *.map
 
 # Runtime output from examples/tools
+tests/
 *.log
 *.pid
 *.tmp
 *.bak
-motor.csv
-dyn200_brake.csv
-testbench_*.csv
+*.csv
 
 # Python/virtualenv artifacts used by Nunavut tooling
 .venv/

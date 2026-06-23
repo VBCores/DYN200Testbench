@@ -1,6 +1,12 @@
 # ethernet-can Setup
 
-`VBCores/ethernet-can` is configured separately. This client does not implement its UDP data-plane protocol; it uses the SocketCAN interfaces that the bridge creates.
+`VBCores/ethernet-can` is configured separately:
+
+```text
+https://github.com/VBCores/ethernet-can
+```
+
+Install, configure, and start it before running this client. This project does not implement the `ethernet-can` UDP data-plane protocol; it uses the SocketCAN interfaces that the bridge creates.
 
 Current expected setup:
 

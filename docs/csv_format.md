@@ -52,3 +52,28 @@ notes
 ```
 
 Fields that do not apply to a row are empty.
+
+`testbench_torque_sweep --arm --out torque_sweep.csv` writes one sweep CSV:
+
+```text
+command_torque_Nm
+motor_torque_mean_Nm
+dyn200_torque_mean_Nm
+motor_torque_stddev_Nm
+dyn200_torque_stddev_Nm
+motor_torque_min_Nm
+motor_torque_max_Nm
+dyn200_torque_min_Nm
+dyn200_torque_max_Nm
+motor_samples
+dyn200_samples
+state_errors_before
+state_errors_after
+state_errors_delta
+```
+
+Plot it with:
+
+```bash
+.venv/bin/python tools/plot_torque_sweep.py torque_sweep.csv --out torque_sweep.png
+```

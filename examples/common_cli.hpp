@@ -43,6 +43,11 @@ inline bool wantsHelp(int argc, char** argv) {
     return hasFlag(argc, argv, "--help") || hasFlag(argc, argv, "-h");
 }
 
+inline int invalidSyntax(const std::string& tool_name) {
+    std::cerr << "Invalid syntax. Run '" << tool_name << " --help' for usage.\n";
+    return 2;
+}
+
 inline std::vector<std::string> positional(int argc, char** argv) {
     std::vector<std::string> out;
     for (int i = 1; i < argc; ++i) {

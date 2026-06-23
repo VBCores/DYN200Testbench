@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace voltbro::testbench;
 using namespace testbench_cli;
@@ -38,6 +39,43 @@ void saveBrakeTransferId(const std::string& iface, uint8_t local_node_id, Canard
     }
 }
 
+bool commandSyntaxValid(const std::vector<std::string>& args) {
+    if (args.size() < 2) {
+        return false;
+    }
+
+    const auto& target = args[0];
+    const auto& cmd = args[1];
+    if (target == "motor") {
+        if (cmd == "enable" || cmd == "disable" || cmd == "stop" || cmd == "foc") {
+            return args.size() == 2;
+        }
+        if (cmd == "velocity" || cmd == "torque" || cmd == "position" || cmd == "voltage") {
+            return args.size() == 3;
+        }
+        return false;
+    }
+    if (target == "dyn200") {
+        if (cmd == "start" || cmd == "stop" || cmd == "zero" || cmd == "read-status") {
+            return args.size() == 2;
+        }
+        if (cmd == "acq-rate" || cmd == "pub-rate" || cmd == "modbus-address" || cmd == "modbus-baud") {
+            return args.size() == 3;
+        }
+        return false;
+    }
+    if (target == "brake") {
+        if (cmd == "off" || cmd == "estop" || cmd == "disable") {
+            return args.size() == 2;
+        }
+        if (cmd == "set" || cmd == "raw" || cmd == "volts") {
+            return args.size() == 3;
+        }
+        return false;
+    }
+    return false;
+}
+
 void usage() {
     std::cout
         << "usage:\n"
@@ -52,14 +90,17 @@ void usage() {
         << "  --node-id N           Target motor node ID for motor commands. Default: 11\n"
         << "  --wait-ms N           Post-command observation/response wait. Default: 1000\n"
         << "  -h, --help            Show this help.\n\n"
+        << "Targets:\n"
+        << "  motor                 Motor target for enable/disable/stop/velocity/torque/position/voltage/foc.\n"
+        << "  dyn200                DYN-200 command target.\n"
+        << "  brake                 Brake command target.\n\n"
         << "Responses:\n"
         << "  motor enable/disable waits for uavcan.register.Access service 384 response.\n"
         << "  motor foc publishes voltbro.foc.command.1.0 on subject 2107 + node_id.\n"
         << "  brake publishes uavcan.primitive.scalar.Real32.1.0 on subject 5103; value is normalized 0.0..1.0.\n"
         << "  brake volts maps 0.0..10.0 V to normalized output; off/estop/disable publish value=0.0.\n"
         << "  brake transfer-id is persisted under /tmp so repeated one-shot CLI calls are not Cyphal duplicates.\n"
-        << "  other commands publish a Cyphal command and then print decoded bus summary if traffic is seen.\n\n";
-    printSummaryFormat();
+        << "  dyn200 read-status prints one decoded status line if a status publication is seen.\n\n";
 }
 
 }  // namespace
@@ -74,9 +115,8 @@ int main(int argc, char** argv) {
         const auto node_id = static_cast<uint8_t>(optionInt(argc, argv, "--node-id", 11));
         const int wait_ms = optionInt(argc, argv, "--wait-ms", 1000);
         auto args = positional(argc, argv);
-        if (args.size() < 2) {
-            usage();
-            return 2;
+        if (!commandSyntaxValid(args)) {
+            return invalidSyntax("testbench_command");
         }
 
         const auto local_node_id = static_cast<uint8_t>(optionInt(argc, argv, "--local-node-id", 101));
@@ -93,6 +133,7 @@ int main(int argc, char** argv) {
 
         const auto& target = args[0];
         const auto& cmd = args[1];
+        bool print_dyn_status_result = false;
         if (target == "motor") {
             if (node_id == 0 || node_id > 127) {
                 std::cerr << "--node-id must be in 1..127\n";
@@ -133,37 +174,57 @@ int main(int argc, char** argv) {
                           << " I_kp=" << foc.current_kp
                           << " I_ki=" << foc.current_ki << "\n";
             }
-            else if (cmd == "stop") motor.stopMotor(node_id);
+            else if (cmd == "stop") {
+                motor.stopMotor(node_id);
+                std::cout << "OK: motor stop sent to node " << unsigned(node_id) << "\n";
+            }
             else {
-                usage();
-                return 2;
+                return invalidSyntax("testbench_command");
+            }
+            if ((cmd == "velocity" || cmd == "torque" || cmd == "position" || cmd == "voltage") && args.size() > 2) {
+                std::cout << "OK: motor " << cmd << " sent to node " << unsigned(node_id)
+                          << " value=" << args[2] << "\n";
             }
         } else if (target == "dyn200") {
-            if (cmd == "start") dyn.startAcquisition();
-            else if (cmd == "stop") dyn.stopAcquisition();
-            else if (cmd == "acq-rate" && args.size() > 2) dyn.setAcquisitionRate(static_cast<uint32_t>(std::stoul(args[2])));
-            else if (cmd == "pub-rate" && args.size() > 2) dyn.setPublicationRate(static_cast<uint32_t>(std::stoul(args[2])));
+            if (cmd == "start") {
+                dyn.startAcquisition();
+                std::cout << "OK: dyn200 start sent\n";
+            } else if (cmd == "stop") {
+                dyn.stopAcquisition();
+                std::cout << "OK: dyn200 stop sent\n";
+            } else if (cmd == "acq-rate" && args.size() > 2) {
+                dyn.setAcquisitionRate(static_cast<uint32_t>(std::stoul(args[2])));
+                std::cout << "OK: dyn200 acquisition rate sent value=" << args[2] << "\n";
+            } else if (cmd == "pub-rate" && args.size() > 2) {
+                dyn.setPublicationRate(static_cast<uint32_t>(std::stoul(args[2])));
+                std::cout << "OK: dyn200 publication rate sent value=" << args[2] << "\n";
+            }
             else if (cmd == "zero") {
                 std::cout << "WARNING: sending explicit DYN-200 sensor zero request.\n";
                 dyn.requestZero();
-            } else if (cmd == "read-status") dyn.readStatus();
-            else if (cmd == "modbus-address" && args.size() > 2) dyn.setRuntimeModbusAddress(static_cast<uint8_t>(std::stoul(args[2])));
-            else if (cmd == "modbus-baud" && args.size() > 2) dyn.setRuntimeModbusBaudrate(static_cast<uint32_t>(std::stoul(args[2])));
+                std::cout << "OK: dyn200 zero sent\n";
+            } else if (cmd == "read-status") {
+                dyn.readStatus();
+                print_dyn_status_result = true;
+            } else if (cmd == "modbus-address" && args.size() > 2) {
+                dyn.setRuntimeModbusAddress(static_cast<uint8_t>(std::stoul(args[2])));
+                std::cout << "OK: dyn200 modbus address sent value=" << args[2] << "\n";
+            } else if (cmd == "modbus-baud" && args.size() > 2) {
+                dyn.setRuntimeModbusBaudrate(static_cast<uint32_t>(std::stoul(args[2])));
+                std::cout << "OK: dyn200 modbus baud sent value=" << args[2] << "\n";
+            }
             else {
-                usage();
-                return 2;
+                return invalidSyntax("testbench_command");
             }
         } else if (target == "brake") {
             if ((cmd == "set" || cmd == "raw") && args.size() > 2) brake.setRaw(std::stof(args[2]));
             else if (cmd == "volts" && args.size() > 2) brake.setVoltage(std::stof(args[2]));
             else if (cmd == "off" || cmd == "estop" || cmd == "disable") brake.disable();
             else {
-                usage();
-                return 2;
+                return invalidSyntax("testbench_command");
             }
             saveBrakeTransferId(iface, local_node_id, brake.transferId());
-            std::cout << "Brake command sent from node " << unsigned(local_node_id)
-                      << " on subject 5103 as uavcan.primitive.scalar.Real32.1.0";
+            std::cout << "OK: brake command sent from node " << unsigned(local_node_id);
             if ((cmd == "set" || cmd == "raw") && args.size() > 2) {
                 std::cout << " value=" << std::stof(args[2]);
             } else if (cmd == "volts" && args.size() > 2) {
@@ -171,10 +232,9 @@ int main(int argc, char** argv) {
             } else {
                 std::cout << " value=0";
             }
-            std::cout << ". Firmware has no direct Cyphal response for brake command.\n";
+            std::cout << "\n";
         } else {
-            usage();
-            return 2;
+            return invalidSyntax("testbench_command");
         }
 
         const auto start = std::chrono::steady_clock::now();
@@ -182,7 +242,21 @@ int main(int argc, char** argv) {
         while (std::chrono::steady_clock::now() < deadline) {
             bus->loop();
         }
-        printSummary(snapshot, std::chrono::steady_clock::now() - start);
+        if (print_dyn_status_result) {
+            if (snapshot.last_dyn_status) {
+                const auto& s = *snapshot.last_dyn_status;
+                std::cout << "dyn200 status: src=" << unsigned(s.source_node_id)
+                          << " sample=" << s.sample_counter
+                          << " acq_hz=" << s.actual_acquisition_rate_hz
+                          << " pub_hz=" << s.cyphal_publication_rate_hz
+                          << " crc=" << s.crc_error_count
+                          << " timeout=" << s.timeout_count
+                          << " baud=" << s.dyn200_baudrate << "\n";
+            } else {
+                std::cout << "OK: dyn200 read-status sent, no status received within "
+                          << wait_ms << " ms\n";
+            }
+        }
         return 0;
     } catch (const std::exception& e) {
         std::cerr << "ERROR: " << e.what() << "\n";

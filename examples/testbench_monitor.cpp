@@ -36,7 +36,7 @@ void usage() {
         << "  --duration N          Run time in seconds; 0 means until Ctrl+C. Default: 0\n"
         << "  --period-ms N         Summary print period. Default: 1000\n"
         << "  --motor-csv PATH      Motor CSV path in csv mode. Default: motor.csv\n"
-        << "  --dyn-csv PATH        DYN-200/brake CSV path in csv mode. Default: dyn200_brake.csv\n"
+        << "  --dyn-csv PATH        DYN-200 CSV path in csv mode. Default: dyn200_brake.csv\n"
         << "  -h, --help            Show this help.\n\n"
         << "CSV files:\n"
         << "  motor CSV contains VBDRIVE state_simple subject 3811.\n"
@@ -52,6 +52,9 @@ int main(int argc, char** argv) {
             usage();
             return 0;
         }
+        if (!positional(argc, argv).empty()) {
+            return invalidSyntax("testbench_monitor");
+        }
         installSignalHandlers();
         const auto iface = optionValue(argc, argv, "--iface", "vcan1.0");
         const auto mode = optionValue(argc, argv, "--mode", "summary");
@@ -59,6 +62,9 @@ int main(int argc, char** argv) {
         const int period_ms = optionInt(argc, argv, "--period-ms", 1000);
         const auto motor_csv = optionValue(argc, argv, "--motor-csv", "motor.csv");
         const auto dyn_csv = optionValue(argc, argv, "--dyn-csv", "dyn200_brake.csv");
+        if (mode != "summary" && mode != "csv") {
+            return invalidSyntax("testbench_monitor");
+        }
 
         auto bus = makeCyphalInterface(iface, 100);
         BusSnapshot snapshot;
@@ -74,9 +80,6 @@ int main(int argc, char** argv) {
             writeMotorHeader(motor_out);
             writeDynHeader(dyn_out);
             std::cout << "Writing " << motor_csv << " and " << dyn_csv << "\n";
-        } else if (mode != "summary") {
-            usage();
-            return 2;
         }
 
         motor.onState([&](const VbdriveState& s) {
