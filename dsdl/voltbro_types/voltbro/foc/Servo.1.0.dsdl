@@ -1,0 +1,9 @@
+uint8 VELOCITY = 0
+uint8 TORQUE = 1
+uint8 POSITION = 2
+uint8 VOLTAGE = 3
+
+uint8 set_point_type
+float32 set_point_value
+
+@sealed

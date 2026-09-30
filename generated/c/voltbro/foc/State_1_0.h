@@ -8,22 +8,22 @@
 // are named with an underscore at the end, like foo_bar_().
 //
 // Generator:     nunavut-2.3.1 (serialization was enabled)
-// Source file:   /tmp/tmp.abIE5vZJqA/voltbro/dynamometer/state.1.0.dsdl
-// Generated at:  2026-06-10 13:34:12.068864 UTC
+// Source file:   /srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/State.1.0.dsdl
+// Generated at:  2026-09-29 12:45:13.885563 UTC
 // Is deprecated: no
 // Fixed port-ID: None
-// Full name:     voltbro.dynamometer.state
+// Full name:     voltbro.foc.State
 // Version:       1.0
 //
 // Platform
 //     python_implementation:  CPython
 //     python_version:  3.12.3
 //     python_release_level:  final
-//     python_build:  ('main', 'Mar 23 2026 19:04:32')
+//     python_build:  ('main', 'Aug 31 2026 10:18:26')
 //     python_compiler:  GCC 13.3.0
 //     python_revision:
 //     python_xoptions:  {}
-//     runtime_platform:  Linux-6.17.0-35-generic-x86_64-with-glibc2.39
+//     runtime_platform:  Linux-7.0.0-34-generic-x86_64-with-glibc2.39
 //
 // Language Options
 //     target_endianness:  any
@@ -33,33 +33,33 @@
 //     cast_format:  (({type}) {value})
 //     std:  c11
 
-#ifndef VOLTBRO_DYNAMOMETER_STATE_1_0_INCLUDED_
-#define VOLTBRO_DYNAMOMETER_STATE_1_0_INCLUDED_
+#ifndef VOLTBRO_FOC_STATE_1_0_INCLUDED_
+#define VOLTBRO_FOC_STATE_1_0_INCLUDED_
 
 #include <nunavut/support/serialization.h>
-#include <stdint.h>
 #include <stdlib.h>
+#include <uavcan/si/unit/angle/Scalar_1_0.h>
 #include <uavcan/si/unit/angular_velocity/Scalar_1_0.h>
-#include <uavcan/si/unit/power/Scalar_1_0.h>
 #include <uavcan/si/unit/torque/Scalar_1_0.h>
+#include <uavcan/time/SynchronizedTimestamp_1_0.h>
 
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_TARGET_ENDIANNESS == 1693710260,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/state.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/State.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_OMIT_FLOAT_SERIALIZATION_SUPPORT == 0,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/state.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/State.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_ENABLE_SERIALIZATION_ASSERTS == 0,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/state.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/State.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_ENABLE_OVERRIDE_VARIABLE_ARRAY_CAPACITY == 0,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/state.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/State.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_CAST_FORMAT == 2368206204,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/state.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/State.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_STD == 575908835,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/state.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/State.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 
 #ifdef __cplusplus
@@ -67,13 +67,13 @@ extern "C" {
 #endif
 
 /// This type does not have a fixed port-ID. See https://forum.opencyphal.org/t/choosing-message-and-service-ids/889
-#define voltbro_dynamometer_state_1_0_HAS_FIXED_PORT_ID_ false
+#define voltbro_foc_State_1_0_HAS_FIXED_PORT_ID_ false
 
 // +-------------------------------------------------------------------------------------------------------------------+
-// | voltbro.dynamometer.state.1.0
+// | voltbro.foc.State.1.0
 // +-------------------------------------------------------------------------------------------------------------------+
-#define voltbro_dynamometer_state_1_0_FULL_NAME_             "voltbro.dynamometer.state"
-#define voltbro_dynamometer_state_1_0_FULL_NAME_AND_VERSION_ "voltbro.dynamometer.state.1.0"
+#define voltbro_foc_State_1_0_FULL_NAME_             "voltbro.foc.State"
+#define voltbro_foc_State_1_0_FULL_NAME_AND_VERSION_ "voltbro.foc.State.1.0"
 
 /// Extent is the minimum amount of memory required to hold any serialized representation of any compatible
 /// version of the data type; or, on other words, it is the the maximum possible size of received objects of this type.
@@ -82,40 +82,25 @@ extern "C" {
 /// When allocating a serialization (TX) buffer, it is safe to use the size of the largest serialized representation
 /// instead of the extent because it provides a tighter bound of the object size; it is safe because the concrete type
 /// is always known during serialization (unlike deserialization). If not sure, use extent everywhere.
-#define voltbro_dynamometer_state_1_0_EXTENT_BYTES_                    37UL
-#define voltbro_dynamometer_state_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_ 37UL
-static_assert(voltbro_dynamometer_state_1_0_EXTENT_BYTES_ >= voltbro_dynamometer_state_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_,
+#define voltbro_foc_State_1_0_EXTENT_BYTES_                    19UL
+#define voltbro_foc_State_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_ 19UL
+static_assert(voltbro_foc_State_1_0_EXTENT_BYTES_ >= voltbro_foc_State_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_,
               "Internal constraint violation");
 
 typedef struct
 {
-    /// saturated uint32 sample_counter
-    uint32_t sample_counter;
+    /// uavcan.time.SynchronizedTimestamp.1.0 timestamp
+    uavcan_time_SynchronizedTimestamp_1_0 timestamp;
 
-    /// saturated uint64 timestamp_us
-    uint64_t timestamp_us;
+    /// uavcan.si.unit.angle.Scalar.1.0 pos
+    uavcan_si_unit_angle_Scalar_1_0 pos;
 
-    /// uavcan.si.unit.angular_velocity.Scalar.1.0 angular_velocity
-    uavcan_si_unit_angular_velocity_Scalar_1_0 angular_velocity;
+    /// uavcan.si.unit.angular_velocity.Scalar.1.0 vel
+    uavcan_si_unit_angular_velocity_Scalar_1_0 vel;
 
-    /// uavcan.si.unit.torque.Scalar.1.0 torque
-    uavcan_si_unit_torque_Scalar_1_0 _torque;
-
-    /// uavcan.si.unit.power.Scalar.1.0 power
-    uavcan_si_unit_power_Scalar_1_0 power;
-
-    /// saturated int32 raw_speed
-    int32_t raw_speed;
-
-    /// saturated int32 raw_torque
-    int32_t raw_torque;
-
-    /// saturated int32 raw_power
-    int32_t raw_power;
-
-    /// saturated uint8 status_flags
-    uint8_t status_flags;
-} voltbro_dynamometer_state_1_0;
+    /// uavcan.si.unit.torque.Scalar.1.0 torq
+    uavcan_si_unit_torque_Scalar_1_0 _torq;
+} voltbro_foc_State_1_0;
 
 /// Serialize an instance into the provided buffer.
 /// The lifetime of the resulting serialized representation is independent of the original instance.
@@ -125,7 +110,7 @@ typedef struct
 /// @param obj      The object to serialize.
 ///
 /// @param buffer   The destination buffer. There are no alignment requirements.
-///                 @see voltbro_dynamometer_state_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_
+///                 @see voltbro_foc_State_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_
 ///
 /// @param inout_buffer_size_bytes  When calling, this is a pointer to the size of the buffer in bytes.
 ///                                 Upon return this value will be updated with the size of the constructed serialized
@@ -133,141 +118,102 @@ typedef struct
 ///                                 layer. In case of error this value is undefined.
 ///
 /// @returns Negative on error, zero on success.
-static inline int8_t voltbro_dynamometer_state_1_0_serialize_(
-    const voltbro_dynamometer_state_1_0* const obj, uint8_t* const buffer,  size_t* const inout_buffer_size_bytes)
+static inline int8_t voltbro_foc_State_1_0_serialize_(
+    const voltbro_foc_State_1_0* const obj, uint8_t* const buffer,  size_t* const inout_buffer_size_bytes)
 {
     if ((obj == NULL) || (buffer == NULL) || (inout_buffer_size_bytes == NULL))
     {
         return -NUNAVUT_ERROR_INVALID_ARGUMENT;
     }
     const size_t capacity_bytes = *inout_buffer_size_bytes;
-    if ((8U * (size_t) capacity_bytes) < 296UL)
+    if ((8U * (size_t) capacity_bytes) < 152UL)
     {
         return -NUNAVUT_ERROR_SERIALIZATION_BUFFER_TOO_SMALL;
     }
     // Notice that fields that are not an integer number of bytes long may overrun the space allocated for them
     // in the serialization buffer up to the next byte boundary. This is by design and is guaranteed to be safe.
     size_t offset_bits = 0U;
-    {   // saturated uint32 sample_counter
-        // Saturation code not emitted -- native representation matches the serialized representation.
-        const int8_t _err0_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, obj->sample_counter, 32U);
+    {   // uavcan.time.SynchronizedTimestamp.1.0 timestamp
+        size_t _size_bytes0_ = 7UL;  // Nested object (max) size, in bytes.
+        int8_t _err0_ = uavcan_time_SynchronizedTimestamp_1_0_serialize_(
+            &obj->timestamp, &buffer[offset_bits / 8U], &_size_bytes0_);
         if (_err0_ < 0)
         {
             return _err0_;
-        }
-        offset_bits += 32U;
-    }
-    {   // saturated uint64 timestamp_us
-        // Saturation code not emitted -- native representation matches the serialized representation.
-        const int8_t _err1_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, obj->timestamp_us, 64U);
-        if (_err1_ < 0)
-        {
-            return _err1_;
-        }
-        offset_bits += 64U;
-    }
-    if (offset_bits % 8U != 0U)  // Pad to 8 bits. TODO: Eliminate redundant padding checks.
-    {
-        const uint8_t _pad0_ = (uint8_t)(8U - offset_bits % 8U);
-        const int8_t _err2_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad0_);  // Optimize?
-        if (_err2_ < 0)
-        {
-            return _err2_;
-        }
-        offset_bits += _pad0_;
-    }
-    {   // uavcan.si.unit.angular_velocity.Scalar.1.0 angular_velocity
-        size_t _size_bytes0_ = 4UL;  // Nested object (max) size, in bytes.
-        int8_t _err3_ = uavcan_si_unit_angular_velocity_Scalar_1_0_serialize_(
-            &obj->angular_velocity, &buffer[offset_bits / 8U], &_size_bytes0_);
-        if (_err3_ < 0)
-        {
-            return _err3_;
         }
         // It is assumed that we know the exact type of the serialized entity, hence we expect the size to match.
         offset_bits += _size_bytes0_ * 8U;  // Advance by the size of the nested object.
     }
     if (offset_bits % 8U != 0U)  // Pad to 8 bits. TODO: Eliminate redundant padding checks.
     {
-        const uint8_t _pad1_ = (uint8_t)(8U - offset_bits % 8U);
-        const int8_t _err4_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad1_);  // Optimize?
-        if (_err4_ < 0)
+        const uint8_t _pad0_ = (uint8_t)(8U - offset_bits % 8U);
+        const int8_t _err1_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad0_);  // Optimize?
+        if (_err1_ < 0)
         {
-            return _err4_;
+            return _err1_;
         }
-        offset_bits += _pad1_;
+        offset_bits += _pad0_;
     }
-    {   // uavcan.si.unit.torque.Scalar.1.0 torque
+    {   // uavcan.si.unit.angle.Scalar.1.0 pos
         size_t _size_bytes1_ = 4UL;  // Nested object (max) size, in bytes.
-        int8_t _err5_ = uavcan_si_unit_torque_Scalar_1_0_serialize_(
-            &obj->_torque, &buffer[offset_bits / 8U], &_size_bytes1_);
-        if (_err5_ < 0)
+        int8_t _err2_ = uavcan_si_unit_angle_Scalar_1_0_serialize_(
+            &obj->pos, &buffer[offset_bits / 8U], &_size_bytes1_);
+        if (_err2_ < 0)
         {
-            return _err5_;
+            return _err2_;
         }
         // It is assumed that we know the exact type of the serialized entity, hence we expect the size to match.
         offset_bits += _size_bytes1_ * 8U;  // Advance by the size of the nested object.
     }
     if (offset_bits % 8U != 0U)  // Pad to 8 bits. TODO: Eliminate redundant padding checks.
     {
-        const uint8_t _pad2_ = (uint8_t)(8U - offset_bits % 8U);
-        const int8_t _err6_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad2_);  // Optimize?
-        if (_err6_ < 0)
+        const uint8_t _pad1_ = (uint8_t)(8U - offset_bits % 8U);
+        const int8_t _err3_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad1_);  // Optimize?
+        if (_err3_ < 0)
         {
-            return _err6_;
+            return _err3_;
         }
-        offset_bits += _pad2_;
+        offset_bits += _pad1_;
     }
-    {   // uavcan.si.unit.power.Scalar.1.0 power
+    {   // uavcan.si.unit.angular_velocity.Scalar.1.0 vel
         size_t _size_bytes2_ = 4UL;  // Nested object (max) size, in bytes.
-        int8_t _err7_ = uavcan_si_unit_power_Scalar_1_0_serialize_(
-            &obj->power, &buffer[offset_bits / 8U], &_size_bytes2_);
-        if (_err7_ < 0)
+        int8_t _err4_ = uavcan_si_unit_angular_velocity_Scalar_1_0_serialize_(
+            &obj->vel, &buffer[offset_bits / 8U], &_size_bytes2_);
+        if (_err4_ < 0)
         {
-            return _err7_;
+            return _err4_;
         }
         // It is assumed that we know the exact type of the serialized entity, hence we expect the size to match.
         offset_bits += _size_bytes2_ * 8U;  // Advance by the size of the nested object.
     }
-    {   // saturated int32 raw_speed
-        // Saturation code not emitted -- native representation matches the serialized representation.
-        const int8_t _err8_ = nunavutSetIxx(&buffer[0], capacity_bytes, offset_bits, obj->raw_speed, 32U);
-        if (_err8_ < 0)
+    if (offset_bits % 8U != 0U)  // Pad to 8 bits. TODO: Eliminate redundant padding checks.
+    {
+        const uint8_t _pad2_ = (uint8_t)(8U - offset_bits % 8U);
+        const int8_t _err5_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad2_);  // Optimize?
+        if (_err5_ < 0)
         {
-            return _err8_;
+            return _err5_;
         }
-        offset_bits += 32U;
+        offset_bits += _pad2_;
     }
-    {   // saturated int32 raw_torque
-        // Saturation code not emitted -- native representation matches the serialized representation.
-        const int8_t _err9_ = nunavutSetIxx(&buffer[0], capacity_bytes, offset_bits, obj->raw_torque, 32U);
-        if (_err9_ < 0)
+    {   // uavcan.si.unit.torque.Scalar.1.0 torq
+        size_t _size_bytes3_ = 4UL;  // Nested object (max) size, in bytes.
+        int8_t _err6_ = uavcan_si_unit_torque_Scalar_1_0_serialize_(
+            &obj->_torq, &buffer[offset_bits / 8U], &_size_bytes3_);
+        if (_err6_ < 0)
         {
-            return _err9_;
+            return _err6_;
         }
-        offset_bits += 32U;
-    }
-    {   // saturated int32 raw_power
-        // Saturation code not emitted -- native representation matches the serialized representation.
-        const int8_t _err10_ = nunavutSetIxx(&buffer[0], capacity_bytes, offset_bits, obj->raw_power, 32U);
-        if (_err10_ < 0)
-        {
-            return _err10_;
-        }
-        offset_bits += 32U;
-    }
-    {   // saturated uint8 status_flags
-        // Saturation code not emitted -- native representation matches the serialized representation.
-        buffer[offset_bits / 8U] = (uint8_t)(obj->status_flags);  // C std, 6.3.1.3 Signed and unsigned integers
-        offset_bits += 8U;
+        // It is assumed that we know the exact type of the serialized entity, hence we expect the size to match.
+        offset_bits += _size_bytes3_ * 8U;  // Advance by the size of the nested object.
     }
     if (offset_bits % 8U != 0U)  // Pad to 8 bits. TODO: Eliminate redundant padding checks.
     {
         const uint8_t _pad3_ = (uint8_t)(8U - offset_bits % 8U);
-        const int8_t _err11_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad3_);  // Optimize?
-        if (_err11_ < 0)
+        const int8_t _err7_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad3_);  // Optimize?
+        if (_err7_ < 0)
         {
-            return _err11_;
+            return _err7_;
         }
         offset_bits += _pad3_;
     }
@@ -295,8 +241,8 @@ static inline int8_t voltbro_dynamometer_state_1_0_serialize_(
 ///                                 was activated. In case of error this value is undefined.
 ///
 /// @returns Negative on error, zero on success.
-static inline int8_t voltbro_dynamometer_state_1_0_deserialize_(
-    voltbro_dynamometer_state_1_0* const out_obj, const uint8_t* buffer, size_t* const inout_buffer_size_bytes)
+static inline int8_t voltbro_foc_State_1_0_deserialize_(
+    voltbro_foc_State_1_0* const out_obj, const uint8_t* buffer, size_t* const inout_buffer_size_bytes)
 {
     if ((out_obj == NULL) || (inout_buffer_size_bytes == NULL) || ((buffer == NULL) && (0 != *inout_buffer_size_bytes)))
     {
@@ -309,67 +255,53 @@ static inline int8_t voltbro_dynamometer_state_1_0_deserialize_(
     const size_t capacity_bytes = *inout_buffer_size_bytes;
     const size_t capacity_bits = capacity_bytes * (size_t) 8U;
     size_t offset_bits = 0U;
-    // saturated uint32 sample_counter
-    out_obj->sample_counter = nunavutGetU32(&buffer[0], capacity_bytes, offset_bits, 32);
-    offset_bits += 32U;
-    // saturated uint64 timestamp_us
-    out_obj->timestamp_us = nunavutGetU64(&buffer[0], capacity_bytes, offset_bits, 64);
-    offset_bits += 64U;
-    offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
-    // uavcan.si.unit.angular_velocity.Scalar.1.0 angular_velocity
-    {
-        size_t _size_bytes3_ = (size_t)(capacity_bytes - nunavutChooseMin((offset_bits / 8U), capacity_bytes));
-        const int8_t _err12_ = uavcan_si_unit_angular_velocity_Scalar_1_0_deserialize_(
-            &out_obj->angular_velocity, &buffer[offset_bits / 8U], &_size_bytes3_);
-        if (_err12_ < 0)
-        {
-            return _err12_;
-        }
-        offset_bits += _size_bytes3_ * 8U;  // Advance by the size of the nested serialized representation.
-    }
-    offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
-    // uavcan.si.unit.torque.Scalar.1.0 torque
+    // uavcan.time.SynchronizedTimestamp.1.0 timestamp
     {
         size_t _size_bytes4_ = (size_t)(capacity_bytes - nunavutChooseMin((offset_bits / 8U), capacity_bytes));
-        const int8_t _err13_ = uavcan_si_unit_torque_Scalar_1_0_deserialize_(
-            &out_obj->_torque, &buffer[offset_bits / 8U], &_size_bytes4_);
-        if (_err13_ < 0)
+        const int8_t _err8_ = uavcan_time_SynchronizedTimestamp_1_0_deserialize_(
+            &out_obj->timestamp, &buffer[offset_bits / 8U], &_size_bytes4_);
+        if (_err8_ < 0)
         {
-            return _err13_;
+            return _err8_;
         }
         offset_bits += _size_bytes4_ * 8U;  // Advance by the size of the nested serialized representation.
     }
     offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
-    // uavcan.si.unit.power.Scalar.1.0 power
+    // uavcan.si.unit.angle.Scalar.1.0 pos
     {
         size_t _size_bytes5_ = (size_t)(capacity_bytes - nunavutChooseMin((offset_bits / 8U), capacity_bytes));
-        const int8_t _err14_ = uavcan_si_unit_power_Scalar_1_0_deserialize_(
-            &out_obj->power, &buffer[offset_bits / 8U], &_size_bytes5_);
-        if (_err14_ < 0)
+        const int8_t _err9_ = uavcan_si_unit_angle_Scalar_1_0_deserialize_(
+            &out_obj->pos, &buffer[offset_bits / 8U], &_size_bytes5_);
+        if (_err9_ < 0)
         {
-            return _err14_;
+            return _err9_;
         }
         offset_bits += _size_bytes5_ * 8U;  // Advance by the size of the nested serialized representation.
     }
-    // saturated int32 raw_speed
-    out_obj->raw_speed = nunavutGetI32(&buffer[0], capacity_bytes, offset_bits, 32);
-    offset_bits += 32U;
-    // saturated int32 raw_torque
-    out_obj->raw_torque = nunavutGetI32(&buffer[0], capacity_bytes, offset_bits, 32);
-    offset_bits += 32U;
-    // saturated int32 raw_power
-    out_obj->raw_power = nunavutGetI32(&buffer[0], capacity_bytes, offset_bits, 32);
-    offset_bits += 32U;
-    // saturated uint8 status_flags
-    if ((offset_bits + 8U) <= capacity_bits)
+    offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
+    // uavcan.si.unit.angular_velocity.Scalar.1.0 vel
     {
-        out_obj->status_flags = buffer[offset_bits / 8U] & 255U;
+        size_t _size_bytes6_ = (size_t)(capacity_bytes - nunavutChooseMin((offset_bits / 8U), capacity_bytes));
+        const int8_t _err10_ = uavcan_si_unit_angular_velocity_Scalar_1_0_deserialize_(
+            &out_obj->vel, &buffer[offset_bits / 8U], &_size_bytes6_);
+        if (_err10_ < 0)
+        {
+            return _err10_;
+        }
+        offset_bits += _size_bytes6_ * 8U;  // Advance by the size of the nested serialized representation.
     }
-    else
+    offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
+    // uavcan.si.unit.torque.Scalar.1.0 torq
     {
-        out_obj->status_flags = 0U;
+        size_t _size_bytes7_ = (size_t)(capacity_bytes - nunavutChooseMin((offset_bits / 8U), capacity_bytes));
+        const int8_t _err11_ = uavcan_si_unit_torque_Scalar_1_0_deserialize_(
+            &out_obj->_torq, &buffer[offset_bits / 8U], &_size_bytes7_);
+        if (_err11_ < 0)
+        {
+            return _err11_;
+        }
+        offset_bits += _size_bytes7_ * 8U;  // Advance by the size of the nested serialized representation.
     }
-    offset_bits += 8U;
     offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
     *inout_buffer_size_bytes = (size_t) (nunavutChooseMin(offset_bits, capacity_bits) / 8U);
     return NUNAVUT_SUCCESS;
@@ -379,13 +311,13 @@ static inline int8_t voltbro_dynamometer_state_1_0_deserialize_(
 /// This function intentionally leaves inactive elements uninitialized; for example, members of a variable-length
 /// array beyond its length are left uninitialized; aliased union memory that is not used by the first union field
 /// is left uninitialized, etc. If full zero-initialization is desired, just use memset(&obj, 0, sizeof(obj)).
-static inline void voltbro_dynamometer_state_1_0_initialize_(voltbro_dynamometer_state_1_0* const out_obj)
+static inline void voltbro_foc_State_1_0_initialize_(voltbro_foc_State_1_0* const out_obj)
 {
     if (out_obj != NULL)
     {
         size_t size_bytes = 0;
         const uint8_t buf = 0;
-        const int8_t err = voltbro_dynamometer_state_1_0_deserialize_(out_obj, &buf, &size_bytes);
+        const int8_t err = voltbro_foc_State_1_0_deserialize_(out_obj, &buf, &size_bytes);
 
         (void) err;
     }
@@ -394,4 +326,4 @@ static inline void voltbro_dynamometer_state_1_0_initialize_(voltbro_dynamometer
 #ifdef __cplusplus
 }
 #endif
-#endif // VOLTBRO_DYNAMOMETER_STATE_1_0_INCLUDED_
+#endif // VOLTBRO_FOC_STATE_1_0_INCLUDED_

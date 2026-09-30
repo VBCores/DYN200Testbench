@@ -1,6 +1,6 @@
-# Troubleshooting
+# Диагностика
 
-Check interfaces:
+Сначала убедитесь, что [мост ethernet-can](ethernet_can_setup.md) запущен и нужный интерфейс существует:
 
 ```bash
 ip link show vcan1.0
@@ -8,12 +8,14 @@ ip -details -statistics link show vcan1.0
 candump vcan1.0
 ```
 
-Common problems:
+- Нет `vcan1.0`: проверьте запуск и конфигурацию моста. Клиент не создаёт интерфейс сам.
+- Видно Heartbeat узла 79, но нет скорости/момента (`5100`/`5101`): в serial CLI прошивки выполните `status` и проверьте `decimal_point valid`. Если значение `no`, проверьте питание/связь датчика, затем выполните `dyn stream start`: команда повторно читает масштаб и запускает поток. При успешном ответе `DYN200 stream: started` снова проверьте `status` и счётчики `speed_sent`/`torque_sent`. Простая перезагрузка контроллера не помогла при проверке 30.09.2026, а эта команда восстановила публикацию.
+- Данные DYN-200 есть, а мотора нет: он работает на отдельной линии. Сейчас это `vcan2.0`; проверьте `candump vcan2.0`. В будущем используйте фактическую линию из диапазона `vcan2.0`–`vcan6.0`. Ищите subject `3811` и уточняйте ID источника.
+- `read_motor` показывает нулевые ток, напряжение или температуры в стороннем старом клиенте: `State.1.0` больше не содержит этих полей. Читайте регистры; см. [протокол VBDRIVE](vbdrive_protocol.md).
+- После успешного запуска повторный `is_on=1` возвращает `is_on=0`: это подтверждённый разработчиком баг установленной прошивки VBDRIVE. Выдержите не менее 10 секунд после `is_on=0` и проверьте ответ регистра; пауза помогает в большинстве, но не во всех случаях. Примеры явно показывают эту паузу в консоли после подтверждённого выключения. Не оставляйте мотор включённым и не отправляйте команду движения, пока включение не подтверждено.
+- Ошибка открытия SocketCAN: проверьте наличие интерфейса и права процесса на CAN-сокет.
+- Ошибка загрузки `libcxxcanard` при конфигурации CMake: обеспечьте доступ к GitHub либо задайте локальный checkout через `VTC_LIBCXXCANARD_SOURCE_DIR`.
+- Нужна перегенерация DSDL, но нет `nnvg`: установите Nunavut или используйте уже включённые в проект заголовки `generated/c` и `generated/cpp`.
+- Не создаётся `dyn200.csv`: проверьте право записи в текущий рабочий каталог.
 
-- Interface does not exist: configure/start `ethernet-can` first.
-- Permission error opening SocketCAN: run with appropriate capabilities or group permissions.
-- No traffic from one device: verify bridge wiring/configuration and `candump vcan1.0`.
-- DYN-200 visible but no motor mapping: check VBDRIVE traffic on `vcan1.0`; only subject `3811` telemetry is decoded.
-- DSDL generation missing: install Nunavut `nnvg`, or use the committed `generated/c` and `generated/cpp` headers.
-- libcxxcanard download fails: allow CMake FetchContent network access, or set `VTC_LIBCXXCANARD_SOURCE_DIR=/path/to/libcxxcanard` to use an existing checkout.
-- CSV file cannot be written: check output directory permissions.
+Для проверки связи не отправляйте ненулевую команду тормозу и не включайте мотор: сначала используйте пассивные `read_dyn200` и `read_motor`.

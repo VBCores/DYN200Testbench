@@ -1,56 +1,13 @@
-# DYN-200 Protocol
+# Cyphal-протокол DYN-200
 
-Confirmed from the DYN-200 firmware sources and the vendored DSDL definitions under `dsdl/project_types/voltbro/dynamometer`.
+Источник: `App/cyphal_app.cpp` и `App/cyphal_app.h` в соседнем репозитории прошивки `../../torque_testbench/DYN200TestBench` (путь от корня этого проекта). Для текущей установки контроллер стенда находится на `vcan1.0`; мотор подключён отдельно к `vcan2.0`.
 
-Subjects:
+Узел `79` работает через Cyphal/CAN FD (1 Мбит/с nominal, 8 Мбит/с data). Он публикует два независимых `uavcan.primitive.scalar.Real32.1.0` сообщения: `5100` — скорость в об/мин, `5101` — момент в Н·м. Каждая публикация имеет собственный transfer-ID; общего номера или метки времени измерения в протоколе нет. Узел также публикует Heartbeat `7509` и список портов `7510`, обслуживает GetInfo `430`.
 
-```text
-7509 uavcan.node.Heartbeat.1.0
-5100 voltbro.dynamometer.state.1.0
-5101 voltbro.dynamometer.status.1.0
-5102 voltbro.dynamometer.command.1.0
-5103 uavcan.primitive.scalar.Real32.1.0
-```
+На `5103` узел принимает `uavcan.primitive.scalar.Real32.1.0` со значением `0.0..1.0`. Прошивка отклоняет NaN, бесконечность и значения вне диапазона. Принятое значение задаёт DAC1/PA4, через внешний усилитель — приблизительно 0–10 В на вход тормоза. Выход удерживается без автоматического тайм-аута; `0.0` возвращает его в ноль.
 
-State `5100` fields: `sample_counter`, `timestamp_us`, angular velocity rad/s, torque Nm, power W, raw speed/torque/power, and `status_flags`.
+Момент вычисляется прошивкой как `raw_torque / 10^decimal_point`; параметр `decimal_point` читается при старте. Скорость публикуется из исходного значения датчика в об/мин. Если датчик был включён после контроллера, поток может отсутствовать до `dyn stream start` в serial CLI или перезапуска контроллера.
 
-Status flag bits:
+Команды запуска/остановки измерений, настройки частоты, обнуления и диагностики датчика передаются через serial CLI прошивки (USART2, 115200 8N1), не через Cyphal.
 
-```text
-0 sample_valid
-1 scaling_valid
-2 repeated_sample
-3 modbus_timeout_recent
-4 modbus_crc_error_recent
-5 sensor_config_uncertain
-6 brake_stub_active
-```
-
-Status `5101` fields include sample counter, CRC/timeout/frame sync/UART/Cyphal counters, actual acquisition rate, publication rate, runtime DYN-200 address, runtime baudrate, and last status byte.
-
-Command `5102` values:
-
-```text
-1 START_ACQUISITION
-2 STOP_ACQUISITION
-3 SET_ACQUISITION_RATE
-4 SET_PUBLICATION_RATE
-5 ZERO_REQUEST
-6 READ_STATUS
-7 SET_MODBUS_ADDRESS_RAM_ONLY
-8 SET_BAUD_RAM_ONLY
-```
-
-`SET_MODBUS_ADDRESS_RAM_ONLY` and `SET_BAUD_RAM_ONLY` change runtime settings only; they are not documented as persistent configuration writes. Valid RAM-only baudrates: `9600`, `14400`, `19200`, `38400`.
-
-Brake command `5103` payload:
-
-```text
-saturated float32 value
-```
-
-Brake behavior in current firmware:
-
-- finite `value` in `[0.0, 1.0]` writes `round(value * 4095)` to DAC1 channel 1 on PA4.
-- `value = 0.0` commands zero brake output.
-- out-of-range, NaN/Inf, or structurally invalid commands are rejected and do not change DAC output.
+Практическая проверка 30.09.2026: при `decimal_point valid=no` узел 79 продолжал передавать Heartbeat и список портов, но не публиковал `5100`/`5101`, даже при ручном вращении шкива. Через UART параметр масштаба `0x08` был прочитан как `2`, затем `dyn stream start` восстановил поток. При вращении в обе стороны за 10 секунд получены ненулевые скорость (`0..565` об/мин) и момент (`−0,66..+0,69` Н·м). Скорость в этой записи не меняла знак, поэтому не считайте её знак достоверным признаком направления.

@@ -32,19 +32,13 @@ if [[ ! -d "${TRAITS_DIR}" ]]; then
     exit 1
 fi
 
-MERGED_DIR="$(mktemp -d)"
-trap 'rm -rf "${MERGED_DIR}"' EXIT
-mkdir -p "${MERGED_DIR}/voltbro"
-cp -R "${ROOT_DIR}/dsdl/voltbro_types/voltbro/." "${MERGED_DIR}/voltbro/"
-cp -R "${ROOT_DIR}/dsdl/project_types/voltbro/." "${MERGED_DIR}/voltbro/"
-
 "${NNVG_BIN}" \
   --target-language c \
   --language-standard c11 \
   --outdir "${OUT_C_DIR}" \
   --lookup-dir "${ROOT_DIR}/dsdl/public_regulated_data_types/uavcan" \
   --lookup-dir "${ROOT_DIR}/dsdl/public_regulated_data_types/reg" \
-  "${MERGED_DIR}/voltbro"
+  "${ROOT_DIR}/dsdl/voltbro_types/voltbro"
 
 "${NNVG_BIN}" \
   --target-language c \
@@ -55,7 +49,7 @@ cp -R "${ROOT_DIR}/dsdl/project_types/voltbro/." "${MERGED_DIR}/voltbro/"
   --outdir "${OUT_CPP_DIR}" \
   --lookup-dir "${ROOT_DIR}/dsdl/public_regulated_data_types/uavcan" \
   --lookup-dir "${ROOT_DIR}/dsdl/public_regulated_data_types/reg" \
-  "${MERGED_DIR}/voltbro"
+  "${ROOT_DIR}/dsdl/voltbro_types/voltbro"
 
 "${NNVG_BIN}" \
   --target-language c \

@@ -5,9 +5,9 @@
 
 #include <cyphal/subscriptions/subscription.h>
 #include <uavcan/_register/Access_1_0.hpp>
-#include <voltbro/foc/command_1_0.hpp>
-#include <voltbro/foc/specific_control_1_0.hpp>
-#include <voltbro/foc/state_simple_1_0.hpp>
+#include <voltbro/foc/MIT_1_0.hpp>
+#include <voltbro/foc/Servo_1_0.hpp>
+#include <voltbro/foc/State_1_0.hpp>
 
 #include <chrono>
 #include <functional>
@@ -20,56 +20,41 @@ namespace voltbro::testbench {
 struct VbdriveState {
     uint8_t source_node_id{};
     uint32_t transfer_id{};
-    std::optional<uint64_t> timestamp_us;
-    std::optional<float> velocity_rad_s;
-    std::optional<float> position_rad;
-    std::optional<float> torque_Nm;
-    std::optional<float> current_A;
-    std::optional<float> voltage_V;
-    std::optional<float> temperature_C;
-    std::optional<float> mcu_temperature_C;
-    std::optional<float> stator_temperature_C;
-    bool has_fault{};
+    uint64_t timestamp_us{};
+    float velocity_rad_s{};
+    float position_rad{};
+    float torque_Nm{};
     std::chrono::steady_clock::time_point host_receive_time{};
 };
 
-inline VbdriveState convertVbdriveStateSimple(const voltbro_foc_state_simple_1_0& msg,
-                                              const CanardRxTransfer* transfer) {
+inline VbdriveState convertVbdriveState(const voltbro_foc_State_1_0& msg,
+                                       const CanardRxTransfer* transfer) {
     VbdriveState s;
     if (transfer != nullptr) {
         s.source_node_id = static_cast<uint8_t>(transfer->metadata.remote_node_id);
         s.transfer_id = transfer->metadata.transfer_id;
     }
     s.timestamp_us = msg.timestamp.microsecond;
-    s.position_rad = msg.angle.radian;
-    s.velocity_rad_s = msg.velocity.radian_per_second;
-    s.torque_Nm = msg._torque.newton_meter;
-    s.current_A = msg.current.ampere;
-    s.voltage_V = msg.bus_voltage.volt;
-    s.mcu_temperature_C = msg.mcu_temp.kelvin - 273.15F;
-    s.stator_temperature_C = msg.stator_temp.kelvin - 273.15F;
-    s.temperature_C = s.stator_temperature_C;
-    s.has_fault = msg.has_fault.value;
+    s.position_rad = msg.pos.radian;
+    s.velocity_rad_s = msg.vel.radian_per_second;
+    s.torque_Nm = msg._torq.newton_meter;
     s.host_receive_time = std::chrono::steady_clock::now();
     return s;
 }
 
-enum class VbdriveSetpointType : uint8_t {
-    Velocity = voltbro_foc_specific_control_1_0_VELOCITY,
-    Torque = voltbro_foc_specific_control_1_0_TORQUE,
-    Position = voltbro_foc_specific_control_1_0_POSITION,
-    Voltage = voltbro_foc_specific_control_1_0_VOLTAGE,
-    Universal = voltbro_foc_specific_control_1_0_UNIVERSAL,
+enum class VbdriveServoMode : uint8_t {
+    Velocity = voltbro_foc_Servo_1_0_VELOCITY,
+    Torque = voltbro_foc_Servo_1_0_TORQUE,
+    Position = voltbro_foc_Servo_1_0_POSITION,
+    Voltage = voltbro_foc_Servo_1_0_VOLTAGE,
 };
 
-struct VbdriveFocCommand {
+struct VbdriveMitCommand {
     float torque_Nm{};
-    float angle_rad{};
+    float position_rad{};
     float velocity_rad_s{};
-    float angle_kp{};
-    float velocity_kp{};
-    float current_kp{};
-    float current_ki{};
+    float position_gain{};
+    float velocity_gain{};
 };
 
 struct VbdriveRegisterAccessResult {
@@ -78,9 +63,12 @@ struct VbdriveRegisterAccessResult {
     std::string name;
     bool mutable_register{};
     bool persistent_register{};
+    uint8_t value_tag{};  // DSDL-variant tag; 0 означает пустое значение.
     std::optional<bool> bit_value;
     std::optional<int64_t> integer_value;
     std::optional<uint64_t> natural_value;
+    std::optional<float> real32_value;
+    std::optional<double> real64_value;
 };
 
 class VbdriveClient {
@@ -95,67 +83,45 @@ public:
     std::optional<VbdriveRegisterAccessResult> lastRegisterAccess() const { return last_register_access_; }
     VbdriveStatistics statistics() const { return stats_; }
 
-    bool protocolMappingAvailable() const { return true; }
-    std::string protocolMappingStatus() const {
-        return "Telemetry mapped on 3811. Commands mapped with libcxxcanard: "
-               "voltbro.foc.command.1.0 on 2107+node_id, "
-               "voltbro.foc.specific_control.1.0 on 3407+node_id, "
-               "state.is_on via uavcan.register.Access service 384.";
-    }
-
-    void sendSpecificControl(uint8_t target_node_id, VbdriveSetpointType type, float value) {
+    void sendServoCommand(uint8_t target_node_id, VbdriveServoMode mode, float value) {
         validateNodeId(target_node_id);
-        voltbro_foc_specific_control_1_0 msg{};
-        msg.set_point_type = static_cast<uint8_t>(type);
+        voltbro_foc_Servo_1_0 msg{};
+        msg.set_point_type = static_cast<uint8_t>(mode);
         msg.set_point_value = value;
         interface_->send_msg(&msg,
-                             static_cast<CanardPortID>(kVbdriveSpecificControlBaseSubjectId + target_node_id),
-                             &specific_control_tid_);
+                             static_cast<CanardPortID>(kVbdriveServoBaseSubjectId + target_node_id),
+                             &servo_tid_);
         flushCyphalTx(interface_);
         stats_.command_messages_sent++;
     }
 
     void setVelocity(uint8_t target_node_id, float rad_s) {
-        VbdriveFocCommand cmd;
-        cmd.velocity_rad_s = rad_s;
-        cmd.angle_kp = 0.0F;
-        cmd.velocity_kp = 2.0F;
-        cmd.current_kp = 3.0F;
-        cmd.current_ki = 1300.0F;
-        sendFocCommand(target_node_id, cmd);
+        sendServoCommand(target_node_id, VbdriveServoMode::Velocity, rad_s);
     }
 
     void setTorque(uint8_t target_node_id, float Nm) {
-        sendSpecificControl(target_node_id, VbdriveSetpointType::Torque, Nm);
+        sendServoCommand(target_node_id, VbdriveServoMode::Torque, Nm);
     }
 
     void setPosition(uint8_t target_node_id, float rad) {
-        VbdriveFocCommand cmd;
-        cmd.angle_rad = rad;
-        cmd.angle_kp = 25.0F;
-        cmd.velocity_kp = 0.2F;
-        cmd.current_kp = 3.0F;
-        cmd.current_ki = 1300.0F;
-        sendFocCommand(target_node_id, cmd);
+        sendServoCommand(target_node_id, VbdriveServoMode::Position, rad);
     }
 
     void setVoltage(uint8_t target_node_id, float V) {
-        sendSpecificControl(target_node_id, VbdriveSetpointType::Voltage, V);
+        sendServoCommand(target_node_id, VbdriveServoMode::Voltage, V);
     }
 
-    void sendFocCommand(uint8_t target_node_id, const VbdriveFocCommand& cmd) {
+    void sendMitCommand(uint8_t target_node_id, const VbdriveMitCommand& cmd) {
         validateNodeId(target_node_id);
-        voltbro_foc_command_1_0 msg{};
-        msg._torque.newton_meter = cmd.torque_Nm;
-        msg.angle.radian = cmd.angle_rad;
-        msg.velocity.radian_per_second = cmd.velocity_rad_s;
-        msg.angle_kp.value = cmd.angle_kp;
-        msg.velocity_kp.value = cmd.velocity_kp;
-        msg.I_kp.value = cmd.current_kp;
-        msg.I_ki.value = cmd.current_ki;
+        voltbro_foc_MIT_1_0 msg{};
+        msg._torq.newton_meter = cmd.torque_Nm;
+        msg.pos.radian = cmd.position_rad;
+        msg.vel.radian_per_second = cmd.velocity_rad_s;
+        msg.pos_gain.value = cmd.position_gain;
+        msg.vel_gain.value = cmd.velocity_gain;
         interface_->send_msg(&msg,
-                             static_cast<CanardPortID>(kVbdriveCommandBaseSubjectId + target_node_id),
-                             &foc_command_tid_);
+                             static_cast<CanardPortID>(kVbdriveMitBaseSubjectId + target_node_id),
+                             &mit_tid_);
         flushCyphalTx(interface_);
         stats_.command_messages_sent++;
     }
@@ -164,12 +130,12 @@ public:
         validateNodeId(target_node_id);
         uavcan_register_Access_Request_1_0 request{};
         uavcan_register_Access_Request_1_0_initialize_(&request);
-        setRegisterName(request, "state.is_on");
+        setRegisterName(request, "is_on");
         uavcan_register_Value_1_0_select_bit_(&request.value);
         request.value.bit.value.count = 1;
         request.value.bit.value.bitpacked[0] = enabled ? 1U : 0U;
 
-        pending_register_name_ = "state.is_on";
+        pending_register_name_ = "is_on";
         last_register_access_.reset();
         interface_->send_request(&request,
                                  kRegisterAccessServiceId,
@@ -230,17 +196,16 @@ public:
 
     void enableMotor(uint8_t target_node_id) { setMotorEnabled(target_node_id, true); }
     void disableMotor(uint8_t target_node_id) { setMotorEnabled(target_node_id, false); }
-    void stopMotor(uint8_t target_node_id) { setVelocity(target_node_id, 0.0F); }
 
 private:
-    class StateSubscription : public AbstractSubscription<voltbro_foc_state_simple_1_0> {
+    class StateSubscription : public AbstractSubscription<voltbro_foc_State_1_0> {
     public:
         StateSubscription(VbdriveClient& owner, InterfacePtr& interface)
-            : AbstractSubscription<voltbro_foc_state_simple_1_0>(interface, kVbdriveStateSimpleSubjectId),
+            : AbstractSubscription<voltbro_foc_State_1_0>(interface, kVbdriveStateSubjectId),
               owner_(owner) {}
 
     private:
-        void handler(const voltbro_foc_state_simple_1_0& msg, CanardRxTransfer* transfer) override {
+        void handler(const voltbro_foc_State_1_0& msg, CanardRxTransfer* transfer) override {
             owner_.acceptState(msg, transfer);
         }
 
@@ -281,8 +246,8 @@ private:
         }
     }
 
-    void acceptState(const voltbro_foc_state_simple_1_0& msg, CanardRxTransfer* transfer) {
-        last_state_ = convertVbdriveStateSimple(msg, transfer);
+    void acceptState(const voltbro_foc_State_1_0& msg, CanardRxTransfer* transfer) {
+        last_state_ = convertVbdriveState(msg, transfer);
         stats_.state_messages++;
         if (state_cb_) state_cb_(*last_state_);
     }
@@ -297,8 +262,15 @@ private:
         out.name = pending_register_name_;
         out.mutable_register = msg._mutable;
         out.persistent_register = msg.persistent;
+        out.value_tag = msg.value._tag_;
         if (uavcan_register_Value_1_0_is_bit_(&msg.value) && msg.value.bit.value.count > 0) {
             out.bit_value = (msg.value.bit.value.bitpacked[0] & 0x01U) != 0;
+        }
+        if (uavcan_register_Value_1_0_is_real32_(&msg.value) && msg.value.real32.value.count > 0) {
+            out.real32_value = msg.value.real32.value.elements[0];
+        }
+        if (uavcan_register_Value_1_0_is_real64_(&msg.value) && msg.value.real64.value.count > 0) {
+            out.real64_value = msg.value.real64.value.elements[0];
         }
         if (uavcan_register_Value_1_0_is_integer64_(&msg.value) && msg.value.integer64.value.count > 0) {
             out.integer_value = msg.value.integer64.value.elements[0];
@@ -322,8 +294,8 @@ private:
     }
 
     CyphalInterfacePtr interface_;
-    CanardTransferID specific_control_tid_{};
-    CanardTransferID foc_command_tid_{};
+    CanardTransferID servo_tid_{};
+    CanardTransferID mit_tid_{};
     CanardTransferID register_access_tid_{};
     std::unique_ptr<StateSubscription> state_sub_;
     std::unique_ptr<RegisterAccessResponseSubscription> register_response_sub_;

@@ -8,22 +8,22 @@
 // are named with an underscore at the end, like foo_bar_().
 //
 // Generator:     nunavut-2.3.1 (serialization was enabled)
-// Source file:   /tmp/tmp.abIE5vZJqA/voltbro/dynamometer/command.1.0.dsdl
-// Generated at:  2026-06-10 13:34:12.066025 UTC
+// Source file:   /srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/Servo.1.0.dsdl
+// Generated at:  2026-09-29 12:45:13.883357 UTC
 // Is deprecated: no
 // Fixed port-ID: None
-// Full name:     voltbro.dynamometer.command
+// Full name:     voltbro.foc.Servo
 // Version:       1.0
 //
 // Platform
 //     python_implementation:  CPython
 //     python_version:  3.12.3
 //     python_release_level:  final
-//     python_build:  ('main', 'Mar 23 2026 19:04:32')
+//     python_build:  ('main', 'Aug 31 2026 10:18:26')
 //     python_compiler:  GCC 13.3.0
 //     python_revision:
 //     python_xoptions:  {}
-//     runtime_platform:  Linux-6.17.0-35-generic-x86_64-with-glibc2.39
+//     runtime_platform:  Linux-7.0.0-34-generic-x86_64-with-glibc2.39
 //
 // Language Options
 //     target_endianness:  any
@@ -33,31 +33,30 @@
 //     cast_format:  (({type}) {value})
 //     std:  c11
 
-#ifndef VOLTBRO_DYNAMOMETER_COMMAND_1_0_INCLUDED_
-#define VOLTBRO_DYNAMOMETER_COMMAND_1_0_INCLUDED_
+#ifndef VOLTBRO_FOC_SERVO_1_0_INCLUDED_
+#define VOLTBRO_FOC_SERVO_1_0_INCLUDED_
 
 #include <nunavut/support/serialization.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <uavcan/primitive/scalar/Real32_1_0.h>
 
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_TARGET_ENDIANNESS == 1693710260,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/command.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/Servo.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_OMIT_FLOAT_SERIALIZATION_SUPPORT == 0,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/command.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/Servo.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_ENABLE_SERIALIZATION_ASSERTS == 0,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/command.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/Servo.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_ENABLE_OVERRIDE_VARIABLE_ARRAY_CAPACITY == 0,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/command.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/Servo.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_CAST_FORMAT == 2368206204,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/command.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/Servo.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 static_assert( NUNAVUT_SUPPORT_LANGUAGE_OPTION_STD == 575908835,
-              "/tmp/tmp.abIE5vZJqA/voltbro/dynamometer/command.1.0.dsdl is trying to use a serialization library that was compiled with "
+              "/srv/codex-work/dyn200cxxclient/pc_cyphal_client/dsdl/voltbro_types/voltbro/foc/Servo.1.0.dsdl is trying to use a serialization library that was compiled with "
               "different language options. This is dangerous and therefore not allowed." );
 
 #ifdef __cplusplus
@@ -65,13 +64,13 @@ extern "C" {
 #endif
 
 /// This type does not have a fixed port-ID. See https://forum.opencyphal.org/t/choosing-message-and-service-ids/889
-#define voltbro_dynamometer_command_1_0_HAS_FIXED_PORT_ID_ false
+#define voltbro_foc_Servo_1_0_HAS_FIXED_PORT_ID_ false
 
 // +-------------------------------------------------------------------------------------------------------------------+
-// | voltbro.dynamometer.command.1.0
+// | voltbro.foc.Servo.1.0
 // +-------------------------------------------------------------------------------------------------------------------+
-#define voltbro_dynamometer_command_1_0_FULL_NAME_             "voltbro.dynamometer.command"
-#define voltbro_dynamometer_command_1_0_FULL_NAME_AND_VERSION_ "voltbro.dynamometer.command.1.0"
+#define voltbro_foc_Servo_1_0_FULL_NAME_             "voltbro.foc.Servo"
+#define voltbro_foc_Servo_1_0_FULL_NAME_AND_VERSION_ "voltbro.foc.Servo.1.0"
 
 /// Extent is the minimum amount of memory required to hold any serialized representation of any compatible
 /// version of the data type; or, on other words, it is the the maximum possible size of received objects of this type.
@@ -80,46 +79,31 @@ extern "C" {
 /// When allocating a serialization (TX) buffer, it is safe to use the size of the largest serialized representation
 /// instead of the extent because it provides a tighter bound of the object size; it is safe because the concrete type
 /// is always known during serialization (unlike deserialization). If not sure, use extent everywhere.
-#define voltbro_dynamometer_command_1_0_EXTENT_BYTES_                    9UL
-#define voltbro_dynamometer_command_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_ 9UL
-static_assert(voltbro_dynamometer_command_1_0_EXTENT_BYTES_ >= voltbro_dynamometer_command_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_,
+#define voltbro_foc_Servo_1_0_EXTENT_BYTES_                    5UL
+#define voltbro_foc_Servo_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_ 5UL
+static_assert(voltbro_foc_Servo_1_0_EXTENT_BYTES_ >= voltbro_foc_Servo_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_,
               "Internal constraint violation");
 
-/// saturated uint8 START_ACQUISITION = 1
-#define voltbro_dynamometer_command_1_0_START_ACQUISITION (1U)
+/// saturated uint8 VELOCITY = 0
+#define voltbro_foc_Servo_1_0_VELOCITY (0U)
 
-/// saturated uint8 STOP_ACQUISITION = 2
-#define voltbro_dynamometer_command_1_0_STOP_ACQUISITION (2U)
+/// saturated uint8 TORQUE = 1
+#define voltbro_foc_Servo_1_0_TORQUE (1U)
 
-/// saturated uint8 SET_ACQUISITION_RATE = 3
-#define voltbro_dynamometer_command_1_0_SET_ACQUISITION_RATE (3U)
+/// saturated uint8 POSITION = 2
+#define voltbro_foc_Servo_1_0_POSITION (2U)
 
-/// saturated uint8 SET_PUBLICATION_RATE = 4
-#define voltbro_dynamometer_command_1_0_SET_PUBLICATION_RATE (4U)
-
-/// saturated uint8 ZERO_REQUEST = 5
-#define voltbro_dynamometer_command_1_0_ZERO_REQUEST (5U)
-
-/// saturated uint8 READ_STATUS = 6
-#define voltbro_dynamometer_command_1_0_READ_STATUS (6U)
-
-/// saturated uint8 SET_MODBUS_ADDRESS_RAM_ONLY = 7
-#define voltbro_dynamometer_command_1_0_SET_MODBUS_ADDRESS_RAM_ONLY (7U)
-
-/// saturated uint8 SET_BAUD_RAM_ONLY = 8
-#define voltbro_dynamometer_command_1_0_SET_BAUD_RAM_ONLY (8U)
+/// saturated uint8 VOLTAGE = 3
+#define voltbro_foc_Servo_1_0_VOLTAGE (3U)
 
 typedef struct
 {
-    /// saturated uint8 command
-    uint8_t command;
+    /// saturated uint8 set_point_type
+    uint8_t set_point_type;
 
-    /// saturated uint32 argument_u32
-    uint32_t argument_u32;
-
-    /// uavcan.primitive.scalar.Real32.1.0 argument_real32
-    uavcan_primitive_scalar_Real32_1_0 argument_real32;
-} voltbro_dynamometer_command_1_0;
+    /// saturated float32 set_point_value
+    float set_point_value;
+} voltbro_foc_Servo_1_0;
 
 /// Serialize an instance into the provided buffer.
 /// The lifetime of the resulting serialized representation is independent of the original instance.
@@ -129,7 +113,7 @@ typedef struct
 /// @param obj      The object to serialize.
 ///
 /// @param buffer   The destination buffer. There are no alignment requirements.
-///                 @see voltbro_dynamometer_command_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_
+///                 @see voltbro_foc_Servo_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_
 ///
 /// @param inout_buffer_size_bytes  When calling, this is a pointer to the size of the buffer in bytes.
 ///                                 Upon return this value will be updated with the size of the constructed serialized
@@ -137,29 +121,30 @@ typedef struct
 ///                                 layer. In case of error this value is undefined.
 ///
 /// @returns Negative on error, zero on success.
-static inline int8_t voltbro_dynamometer_command_1_0_serialize_(
-    const voltbro_dynamometer_command_1_0* const obj, uint8_t* const buffer,  size_t* const inout_buffer_size_bytes)
+static inline int8_t voltbro_foc_Servo_1_0_serialize_(
+    const voltbro_foc_Servo_1_0* const obj, uint8_t* const buffer,  size_t* const inout_buffer_size_bytes)
 {
     if ((obj == NULL) || (buffer == NULL) || (inout_buffer_size_bytes == NULL))
     {
         return -NUNAVUT_ERROR_INVALID_ARGUMENT;
     }
     const size_t capacity_bytes = *inout_buffer_size_bytes;
-    if ((8U * (size_t) capacity_bytes) < 72UL)
+    if ((8U * (size_t) capacity_bytes) < 40UL)
     {
         return -NUNAVUT_ERROR_SERIALIZATION_BUFFER_TOO_SMALL;
     }
     // Notice that fields that are not an integer number of bytes long may overrun the space allocated for them
     // in the serialization buffer up to the next byte boundary. This is by design and is guaranteed to be safe.
     size_t offset_bits = 0U;
-    {   // saturated uint8 command
+    {   // saturated uint8 set_point_type
         // Saturation code not emitted -- native representation matches the serialized representation.
-        buffer[offset_bits / 8U] = (uint8_t)(obj->command);  // C std, 6.3.1.3 Signed and unsigned integers
+        buffer[offset_bits / 8U] = (uint8_t)(obj->set_point_type);  // C std, 6.3.1.3 Signed and unsigned integers
         offset_bits += 8U;
     }
-    {   // saturated uint32 argument_u32
-        // Saturation code not emitted -- native representation matches the serialized representation.
-        const int8_t _err0_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, obj->argument_u32, 32U);
+    {   // saturated float32 set_point_value
+        // Saturation code not emitted -- assume the native representation of float32 is conformant.
+        static_assert(NUNAVUT_PLATFORM_IEEE754_FLOAT, "Native IEEE754 binary32 required. TODO: relax constraint");
+        const int8_t _err0_ = nunavutSetF32(&buffer[0], capacity_bytes, offset_bits, obj->set_point_value);
         if (_err0_ < 0)
         {
             return _err0_;
@@ -175,27 +160,6 @@ static inline int8_t voltbro_dynamometer_command_1_0_serialize_(
             return _err1_;
         }
         offset_bits += _pad0_;
-    }
-    {   // uavcan.primitive.scalar.Real32.1.0 argument_real32
-        size_t _size_bytes0_ = 4UL;  // Nested object (max) size, in bytes.
-        int8_t _err2_ = uavcan_primitive_scalar_Real32_1_0_serialize_(
-            &obj->argument_real32, &buffer[offset_bits / 8U], &_size_bytes0_);
-        if (_err2_ < 0)
-        {
-            return _err2_;
-        }
-        // It is assumed that we know the exact type of the serialized entity, hence we expect the size to match.
-        offset_bits += _size_bytes0_ * 8U;  // Advance by the size of the nested object.
-    }
-    if (offset_bits % 8U != 0U)  // Pad to 8 bits. TODO: Eliminate redundant padding checks.
-    {
-        const uint8_t _pad1_ = (uint8_t)(8U - offset_bits % 8U);
-        const int8_t _err3_ = nunavutSetUxx(&buffer[0], capacity_bytes, offset_bits, 0U, _pad1_);  // Optimize?
-        if (_err3_ < 0)
-        {
-            return _err3_;
-        }
-        offset_bits += _pad1_;
     }
     // It is assumed that we know the exact type of the serialized entity, hence we expect the size to match.
     *inout_buffer_size_bytes = (size_t) (offset_bits / 8U);
@@ -221,8 +185,8 @@ static inline int8_t voltbro_dynamometer_command_1_0_serialize_(
 ///                                 was activated. In case of error this value is undefined.
 ///
 /// @returns Negative on error, zero on success.
-static inline int8_t voltbro_dynamometer_command_1_0_deserialize_(
-    voltbro_dynamometer_command_1_0* const out_obj, const uint8_t* buffer, size_t* const inout_buffer_size_bytes)
+static inline int8_t voltbro_foc_Servo_1_0_deserialize_(
+    voltbro_foc_Servo_1_0* const out_obj, const uint8_t* buffer, size_t* const inout_buffer_size_bytes)
 {
     if ((out_obj == NULL) || (inout_buffer_size_bytes == NULL) || ((buffer == NULL) && (0 != *inout_buffer_size_bytes)))
     {
@@ -235,31 +199,19 @@ static inline int8_t voltbro_dynamometer_command_1_0_deserialize_(
     const size_t capacity_bytes = *inout_buffer_size_bytes;
     const size_t capacity_bits = capacity_bytes * (size_t) 8U;
     size_t offset_bits = 0U;
-    // saturated uint8 command
+    // saturated uint8 set_point_type
     if ((offset_bits + 8U) <= capacity_bits)
     {
-        out_obj->command = buffer[offset_bits / 8U] & 255U;
+        out_obj->set_point_type = buffer[offset_bits / 8U] & 255U;
     }
     else
     {
-        out_obj->command = 0U;
+        out_obj->set_point_type = 0U;
     }
     offset_bits += 8U;
-    // saturated uint32 argument_u32
-    out_obj->argument_u32 = nunavutGetU32(&buffer[0], capacity_bytes, offset_bits, 32);
+    // saturated float32 set_point_value
+    out_obj->set_point_value = nunavutGetF32(&buffer[0], capacity_bytes, offset_bits);
     offset_bits += 32U;
-    offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
-    // uavcan.primitive.scalar.Real32.1.0 argument_real32
-    {
-        size_t _size_bytes1_ = (size_t)(capacity_bytes - nunavutChooseMin((offset_bits / 8U), capacity_bytes));
-        const int8_t _err4_ = uavcan_primitive_scalar_Real32_1_0_deserialize_(
-            &out_obj->argument_real32, &buffer[offset_bits / 8U], &_size_bytes1_);
-        if (_err4_ < 0)
-        {
-            return _err4_;
-        }
-        offset_bits += _size_bytes1_ * 8U;  // Advance by the size of the nested serialized representation.
-    }
     offset_bits = (offset_bits + 7U) & ~(size_t) 7U;  // Align on 8 bits.
     *inout_buffer_size_bytes = (size_t) (nunavutChooseMin(offset_bits, capacity_bits) / 8U);
     return NUNAVUT_SUCCESS;
@@ -269,13 +221,13 @@ static inline int8_t voltbro_dynamometer_command_1_0_deserialize_(
 /// This function intentionally leaves inactive elements uninitialized; for example, members of a variable-length
 /// array beyond its length are left uninitialized; aliased union memory that is not used by the first union field
 /// is left uninitialized, etc. If full zero-initialization is desired, just use memset(&obj, 0, sizeof(obj)).
-static inline void voltbro_dynamometer_command_1_0_initialize_(voltbro_dynamometer_command_1_0* const out_obj)
+static inline void voltbro_foc_Servo_1_0_initialize_(voltbro_foc_Servo_1_0* const out_obj)
 {
     if (out_obj != NULL)
     {
         size_t size_bytes = 0;
         const uint8_t buf = 0;
-        const int8_t err = voltbro_dynamometer_command_1_0_deserialize_(out_obj, &buf, &size_bytes);
+        const int8_t err = voltbro_foc_Servo_1_0_deserialize_(out_obj, &buf, &size_bytes);
 
         (void) err;
     }
@@ -284,4 +236,4 @@ static inline void voltbro_dynamometer_command_1_0_initialize_(voltbro_dynamomet
 #ifdef __cplusplus
 }
 #endif
-#endif // VOLTBRO_DYNAMOMETER_COMMAND_1_0_INCLUDED_
+#endif // VOLTBRO_FOC_SERVO_1_0_INCLUDED_

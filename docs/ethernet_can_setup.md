@@ -1,23 +1,25 @@
-# ethernet-can Setup
+# Подключение через ethernet-can
 
-`VBCores/ethernet-can` is configured separately:
+Мост [VBCores/ethernet-can](https://github.com/VBCores/ethernet-can) настраивается и запускается отдельно. Этот клиент не реализует UDP-протокол моста: он работает с созданными мостом интерфейсами Linux SocketCAN.
 
-```text
-https://github.com/VBCores/ethernet-can
-```
-
-Install, configure, and start it before running this client. This project does not implement the `ethernet-can` UDP data-plane protocol; it uses the SocketCAN interfaces that the bridge creates.
-
-Current expected setup:
+Текущая схема подключения:
 
 ```text
-vcan1.0 -> VBDRIVE motor + DYN-200 + brake DAC commands
+vcan1.0          контроллер стенда DYN-200 (узел 79), включая команду тормоза
+vcan2.0          сейчас подключённый VBDRIVE (при проверке — узел 4)
+vcan3.0–vcan6.0  возможные дополнительные моторные линии; наличие устройства не гарантировано
 ```
 
-Checks:
+`vcan6.0` — максимальный физический номер линии в этой установке. ID мотора и активную линию проверяйте на месте; не переносите адрес `4` на все линии. Примеры не принимают аргументы: изменяйте `can_interface` в начале нужного `.cpp`.
+
+Проверка интерфейсов и пассивного трафика:
 
 ```bash
 ip link show vcan1.0
 ip -details link show vcan1.0
 candump vcan1.0
+ip link show vcan2.0
+candump vcan2.0
 ```
+
+`candump` только наблюдает трафик. При диагностике других моторных линий замените `vcan2.0` на нужное имя до `vcan6.0`.

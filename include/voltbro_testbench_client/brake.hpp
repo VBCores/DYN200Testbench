@@ -24,10 +24,7 @@ public:
         validateFiniteRange(brake_side_volts, 0.0F, 10.0F, "brake voltage command");
         setNormalized(brake_side_volts / 10.0F);
     }
-    void setRaw(float raw_0_to_1) { setNormalized(raw_0_to_1); }
     void disable() { send(0.0F); }
-    void off() { disable(); }
-    void emergencyStop() { disable(); }
     CanardTransferID transferId() const { return transfer_id_; }
 
 private:

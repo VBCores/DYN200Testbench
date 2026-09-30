@@ -1,0 +1,7 @@
+uavcan.time.SynchronizedTimestamp.1.0 timestamp
+
+uavcan.si.unit.angle.Scalar.1.0 pos
+uavcan.si.unit.angular_velocity.Scalar.1.0 vel
+uavcan.si.unit.torque.Scalar.1.0 torq
+
+@sealed

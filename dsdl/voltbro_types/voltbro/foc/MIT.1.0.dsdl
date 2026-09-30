@@ -1,0 +1,9 @@
+# MIT-style control. Field order preserves the prefix of command.1.0.
+uavcan.si.unit.torque.Scalar.1.0 torq
+uavcan.si.unit.angle.Scalar.1.0 pos
+uavcan.si.unit.angular_velocity.Scalar.1.0 vel
+
+uavcan.primitive.scalar.Real32.1.0 pos_gain
+uavcan.primitive.scalar.Real32.1.0 vel_gain
+
+@sealed
