@@ -19,7 +19,7 @@ void requestStop(int) { stop_requested = 1; }
 int main() {
     // ФИЗИЧЕСКОЕ ДВИЖЕНИЕ: оператор должен контролировать мотор и питание.
     // Cyphal Servo VELOCITY соответствует UART `servo_cmd: 0 <speed>`.
-    constexpr const char* can_interface = "vcan2.0";
+    constexpr const char* can_interface = "vcan1.0";
     constexpr uint8_t local_node_id = 101;
     constexpr uint8_t motor_node_id = 4;
     constexpr float speed_rad_s = 1.0F;  // Эквивалент UART `servo_cmd: 0 1`.

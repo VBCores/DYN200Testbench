@@ -7,10 +7,10 @@
 using namespace voltbro::testbench;
 
 int main() {
-    // Настройки этого примера: мотор 4 на vcan2.0, ПК занимает свободный ID 101.
+    // Настройки этого примера: мотор 4 на vcan1.0, ПК занимает свободный ID 101.
     // Пример двигает РЕАЛЬНЫЙ мотор. Перед запуском проверьте механику и питание.
     constexpr uint8_t motor_id = 4;
-    auto bus = makeCyphalInterface("vcan2.0", 101);
+    auto bus = makeCyphalInterface("vcan1.0", 101);
     VbdriveClient motor(bus);
 
     try {

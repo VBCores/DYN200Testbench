@@ -1,21 +1,70 @@
 #pragma once
 
-#include "cyphal_node.hpp"
-#include "statistics.hpp"
-
+#include <cyphal/allocators/sys/sys_allocator.h>
+#include <cyphal/cyphal.h>
+#include <cyphal/definitions.h>
+#include <cyphal/providers/LinuxCAN.h>
 #include <cyphal/subscriptions/subscription.h>
+#include <libcanard/canard.h>
 #include <uavcan/_register/Access_1_0.hpp>
 #include <voltbro/foc/MIT_1_0.hpp>
 #include <voltbro/foc/Servo_1_0.hpp>
 #include <voltbro/foc/State_1_0.hpp>
 
 #include <chrono>
+#include <cstdint>
 #include <functional>
+#include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
 namespace voltbro::testbench {
+
+class Error : public std::runtime_error {
+public:
+    explicit Error(const std::string& what) : std::runtime_error(what) {}
+};
+
+class ProtocolError : public Error {
+public:
+    explicit ProtocolError(const std::string& what) : Error(what) {}
+};
+
+constexpr uint16_t kVbdriveStateSubjectId = 3811;
+constexpr uint16_t kVbdriveMitBaseSubjectId = 2107;
+constexpr uint16_t kVbdriveServoBaseSubjectId = 3407;
+constexpr uint16_t kRegisterAccessServiceId = 384;
+constexpr size_t kDefaultTxQueueLength = 256;
+
+using CyphalInterfacePtr = std::shared_ptr<CyphalInterface>;
+
+inline CyphalInterfacePtr makeCyphalInterface(const std::string& ifname,
+                                              uint8_t local_node_id,
+                                              size_t tx_queue_len = kDefaultTxQueueLength) {
+    if (local_node_id > CANARD_NODE_ID_MAX) {
+        throw ProtocolError("local Cyphal node ID must be in range 0..127");
+    }
+    return CyphalInterface::create_heap<LinuxCAN, SystemAllocator>(
+        local_node_id, ifname, tx_queue_len, DEFAULT_CONFIG);
+}
+
+inline void flushCyphalTx(const CyphalInterfacePtr& interface) {
+    if (!interface) {
+        throw ProtocolError("Cyphal interface is not initialized");
+    }
+    while (interface->has_unsent_frames()) {
+        interface->process_tx_once();
+    }
+}
+
+struct VbdriveStatistics {
+    uint64_t state_messages{};
+    uint64_t command_messages_sent{};
+    uint64_t malformed_messages{};
+    double state_rate_hz{};
+};
 
 struct VbdriveState {
     uint8_t source_node_id{};

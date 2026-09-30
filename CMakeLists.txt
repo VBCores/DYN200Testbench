@@ -69,12 +69,6 @@ endif()
 
 if(VTC_BUILD_EXAMPLES)
     foreach(example
-        read_dyn200
-        log_dyn200_csv
-        set_brake
-        read_motor
-        try_enable_motor
-        spin_motor_slow
         try_mit_motor
         try_servo_motor)
         add_executable(${example} examples/${example}.cpp)
@@ -83,6 +77,19 @@ if(VTC_BUILD_EXAMPLES)
             add_dependencies(${example} vtc_generate_dsdl)
         endif()
     endforeach()
+
+    # Raw example uses libcxxcanard directly and only generated DSDL type headers.
+    add_executable(read_dyn200_raw examples/read_dyn200_raw.cpp)
+    target_include_directories(read_dyn200_raw PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/generated/c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/generated/cpp")
+    target_link_libraries(read_dyn200_raw PRIVATE libcxxcanard)
+
+    add_executable(send_brake_5103 examples/send_brake_5103.cpp)
+    target_include_directories(send_brake_5103 PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/generated/c"
+        "${CMAKE_CURRENT_SOURCE_DIR}/generated/cpp")
+    target_link_libraries(send_brake_5103 PRIVATE libcxxcanard)
 endif()
 
 install(TARGETS voltbro_testbench_client libcxxcanard EXPORT voltbro_testbench_clientTargets)
